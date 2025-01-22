@@ -9,4 +9,6 @@ public class Vehicle
     {
         Name = name;
     }
+    
+    public List<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
 }
