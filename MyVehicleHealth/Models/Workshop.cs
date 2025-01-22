@@ -12,4 +12,6 @@ public class Workshop
         MechanicName = mechanicName;
         Phone = phone;
     }
+    
+    List<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
 }
