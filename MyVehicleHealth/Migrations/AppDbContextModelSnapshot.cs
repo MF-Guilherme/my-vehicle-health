@@ -84,9 +84,6 @@ namespace MyVehicleHealth.Migrations
                     b.Property<decimal>("PartCost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalCost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MaintenanceId");
