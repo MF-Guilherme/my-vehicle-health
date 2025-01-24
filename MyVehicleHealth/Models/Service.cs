@@ -12,7 +12,6 @@ public class Service
     public string? PartBrand { get; set; }
     public decimal PartCost { get; set; }
     public decimal LaborCost { get; set; }
-    public decimal TotalCost { get; private set; }
     
     public Maintenance Maintenance { get; set; }
 
@@ -24,7 +23,5 @@ public class Service
         NextMaintenanceDate = nextMaintenanceDate;
         PartCost = partCost;
         LaborCost = laborCost;
-        
-        TotalCost = partCost + laborCost;
     }
 }
