@@ -107,4 +107,23 @@ public class ServiceController : ControllerBase
         _context.SaveChanges();
         return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, ServiceUpdateDto dto)
+    {
+        var service = _context.Services.Find(id);
+        if (service is null) return NotFound();
+        
+        service.Description = dto.Description;
+        service.MaintenanceDate = dto.MaintenanceDate;
+        service.CurrentMileage = dto.CurrentMileage;
+        service.NextMaintenanceDate = dto.NextMaintenanceDate;
+        service.NextMaintenanceMileage = dto.NextMaintenanceMileage;
+        service.PartBrand = dto.PartBrand;
+        service.PartCost = dto.PartCost;
+        service.LaborCost = dto.LaborCost;
+        
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
+    }
 }
