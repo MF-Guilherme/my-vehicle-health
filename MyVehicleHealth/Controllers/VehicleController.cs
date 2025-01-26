@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyVehicleHealth.Data;
+using MyVehicleHealth.Dtos;
 using MyVehicleHealth.Models;
 
 namespace MyVehicleHealth.Controllers;
@@ -17,30 +19,66 @@ public class VehicleController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() => Ok(_context.Vehicles.ToList());
+    public IActionResult GetAll()
+    {
+        var vehicles = _context.Vehicles
+            .Select(v => new VehicleReadDto
+            {
+                Id = v.Id,
+                Name = v.Name,
+                Maintenances = v.Maintenances.Select(m => new MaintenanceSummaryDto
+                {
+                    Id = m.Id,
+                    MaintenanceDate = m.MaintenanceDate,
+                    WorkshopName = m.Workshop.CompanyName,
+                    TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
+                }).ToList()
+            })
+            .ToList();
+        return Ok(vehicles);
+    }
 
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
-        var vehicle = _context.Vehicles.Find(id);
+        var vehicle = _context.Vehicles
+            .Where(v => v.Id == id)
+            .Select(v => new VehicleReadDto
+            {
+                Id = v.Id,
+                Name = v.Name,
+                Maintenances = v.Maintenances.Select(m => new MaintenanceSummaryDto
+                {
+                    Id = m.Id,
+                    MaintenanceDate = m.MaintenanceDate,
+                    WorkshopName = m.Workshop.CompanyName,
+                    TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
+                }).ToList()
+            })
+            .FirstOrDefault();
         return vehicle is null ? NotFound() : Ok(vehicle);
     }
 
     [HttpPost]
-    public IActionResult Create(Vehicle vehicle)
+    public IActionResult Create(VehicleCreateDto dto)
     {
+        var vehicle = new Vehicle
+        {
+            Name = dto.Name,
+        };
+        
         _context.Vehicles.Add(vehicle);
         _context.SaveChanges();
         return CreatedAtAction(nameof(GetById), new { id = vehicle.Id }, vehicle);
     }
     
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Vehicle updatedVehicle)
+    public IActionResult Update(int id, VehicleUpdateDto dto)
     {
         var vehicle = _context.Vehicles.Find(id);
         if (vehicle is null) return NotFound();
         
-        vehicle.Name = updatedVehicle.Name;
+        vehicle.Name = dto.Name;
         _context.SaveChanges();
         
         return CreatedAtAction(nameof(GetById), new { id = vehicle.Id }, vehicle);
