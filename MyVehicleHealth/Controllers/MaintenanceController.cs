@@ -83,7 +83,7 @@ public class MaintenanceController : ControllerBase
         
         maintenance.VehicleId = dto.VehicleId;
         maintenance.WorkshopId = dto.WorkshopId;
-        maintenance.MaintenanceDate = dto.MaitenanceDate;
+        maintenance.MaintenanceDate = dto.MaintenanceDate;
         _context.SaveChanges();
         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
     }
