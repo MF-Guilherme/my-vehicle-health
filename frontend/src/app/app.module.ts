@@ -1,14 +1,26 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
-import { AppRoutingModule } from './app-routing.module';
-
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { FooterComponent } from './footer/footer.component';
+import { VehiclesComponent } from './vehicles/vehicles.component';
+import { MaintenanceComponent } from './maintenance/maintenance.component';
+import { routes } from './app.routes';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    FooterComponent,
+    VehiclesComponent,
+    MaintenanceComponent
+  ],
   imports: [
-    CommonModule,
-    AppRoutingModule
-  ]
+    BrowserModule,
+    RouterModule.forRoot(routes)
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
