@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyVehicleHealth.Data;
 using MyVehicleHealth.Dtos;
 using MyVehicleHealth.Models;
@@ -15,10 +16,30 @@ public class WorkshopController : ControllerBase
     {
         _context = context;
     }
-    
+
     [HttpGet]
-    public IActionResult GetAll() => Ok(_context.Workshops.ToList());
-    
+    public IActionResult GetAll()
+    {
+        var workshops = _context.Workshops
+            .Include(w => w.Maintenances)
+            .Select(w => new WorkshopReadDto
+            {
+                Id = w.Id,
+                CompanyName = w.CompanyName,
+                MechanicName = w.MechanicName,
+                Phone = w.Phone,
+                Maintenances = w.Maintenances.Select(m => new WorkshopMaintenanceSummaryDto
+                {
+                    Id = m.Id,
+                    MaintenanceDate = m.MaintenanceDate,
+                    TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
+                }).ToList()
+            })
+            .ToList();
+        
+        return Ok(workshops);
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
