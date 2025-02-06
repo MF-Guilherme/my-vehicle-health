@@ -7,6 +7,8 @@ public class Workshop
     public string MechanicName { get; set; }
     public string Phone { get; set; }
 
+    public Workshop() { }
+    
     public Workshop(string mechanicName, string phone)
     {
         MechanicName = mechanicName;
