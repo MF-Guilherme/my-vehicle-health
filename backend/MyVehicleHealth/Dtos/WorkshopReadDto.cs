@@ -12,6 +12,8 @@ public class WorkshopReadDto
 public class WorkshopMaintenanceSummaryDto
 {
     public int Id { get; set; }
+    public string VehicleName { get; set; }
     public DateTime MaintenanceDate { get; set; }
+    public List<ServiceSummaryReadDto> Services { get; set; }
     public decimal TotalCost { get; set; }
 }

@@ -31,12 +31,17 @@ public class WorkshopController : ControllerBase
                 Maintenances = w.Maintenances.Select(m => new WorkshopMaintenanceSummaryDto
                 {
                     Id = m.Id,
+                    VehicleName = m.Vehicle.Name,
                     MaintenanceDate = m.MaintenanceDate,
-                    TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
+                    Services = m.Services.Select(s => new ServiceSummaryReadDto
+                    {
+                        Id = s.Id,
+                        Description = s.Description,
+                    }).ToList(),
+                    TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost),
                 }).ToList()
             })
             .ToList();
-        
         return Ok(workshops);
     }
 
@@ -55,8 +60,14 @@ public class WorkshopController : ControllerBase
                     Maintenances = w.Maintenances.Select(m => new WorkshopMaintenanceSummaryDto
                     {
                         Id = m.Id,
+                        VehicleName = m.Vehicle.Name,
                         MaintenanceDate = m.MaintenanceDate,
-                        TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
+                        Services = m.Services.Select(s => new ServiceSummaryReadDto
+                        {
+                            Id = s.Id,
+                            Description = s.Description,
+                        }).ToList(),
+                        TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost),
                     }).ToList()
                 })
                 .FirstOrDefault();
