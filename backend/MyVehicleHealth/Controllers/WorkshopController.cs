@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MyVehicleHealth.Data;
+using MyVehicleHealth.Dtos;
 using MyVehicleHealth.Models;
 
 namespace MyVehicleHealth.Controllers;
@@ -26,8 +27,15 @@ public class WorkshopController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(Workshop workshop)
+    public IActionResult Create(WorkshopCreateDto dto)
     {
+        var workshop = new Workshop
+        {
+            CompanyName = dto.CompanyName,
+            MechanicName = dto.MechanicName,
+            Phone = dto.Phone
+        };
+        
         _context.Workshops.Add(workshop);
         _context.SaveChanges();
         return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
