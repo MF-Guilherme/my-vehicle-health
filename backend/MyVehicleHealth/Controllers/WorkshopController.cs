@@ -80,14 +80,14 @@ public class WorkshopController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Workshop updatedWorkshop)
+    public IActionResult Update(int id, WorkshopUpdateDto dto)
     {
         var workshop = _context.Workshops.Find(id);
         if (workshop is null) return NotFound();
         
-        workshop.CompanyName = updatedWorkshop.CompanyName;
-        workshop.MechanicName = updatedWorkshop.MechanicName;
-        workshop.Phone = updatedWorkshop.Phone;
+        workshop.CompanyName = dto.CompanyName;
+        workshop.MechanicName = dto.MechanicName;
+        workshop.Phone = dto.Phone;
         _context.SaveChanges();
         
         return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
