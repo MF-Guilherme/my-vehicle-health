@@ -43,7 +43,24 @@ public class WorkshopController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
-        var workshop = _context.Workshops.Find(id);
+        var workshop = _context.Workshops
+                .Where(w => w.Id == id)
+                .Include(w => w.Maintenances)
+                .Select(w => new WorkshopReadDto
+                {
+                    Id = w.Id,
+                    CompanyName = w.CompanyName,
+                    MechanicName = w.MechanicName,
+                    Phone = w.Phone,
+                    Maintenances = w.Maintenances.Select(m => new WorkshopMaintenanceSummaryDto
+                    {
+                        Id = m.Id,
+                        MaintenanceDate = m.MaintenanceDate,
+                        TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
+                    }).ToList()
+                })
+                .FirstOrDefault();
+        
         return workshop is null ? NotFound() : Ok(workshop);
     }
 
