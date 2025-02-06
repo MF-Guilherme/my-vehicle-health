@@ -31,6 +31,11 @@ public class VehicleController : ControllerBase
                     Id = m.Id,
                     MaintenanceDate = m.MaintenanceDate,
                     WorkshopName = m.Workshop.CompanyName,
+                    Services = m.Services.Select(s => new ServiceSummaryReadDto
+                    {
+                        Id = s.Id,
+                        Description = s.Description,
+                    }).ToList(),
                     TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
                 }).ToList()
             })
@@ -52,6 +57,11 @@ public class VehicleController : ControllerBase
                     Id = m.Id,
                     MaintenanceDate = m.MaintenanceDate,
                     WorkshopName = m.Workshop.CompanyName,
+                    Services = m.Services.Select(s => new ServiceSummaryReadDto
+                    {
+                        Id = s.Id,
+                        Description = s.Description,
+                    }).ToList(),
                     TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost)
                 }).ToList()
             })

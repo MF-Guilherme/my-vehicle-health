@@ -7,5 +7,11 @@ public class MaintenanceReadDto
     public string WorkshopName { get; set; }
     public DateTime MaintenanceDate { get; set; }
     public decimal TotalCost { get; set; }
-    public List<string> Services { get; set; }
+    public List<ServiceSummaryReadDto> Services { get; set; }
+}
+
+public class ServiceSummaryReadDto
+{
+    public int Id { get; set; }
+    public string Description { get; set; }
 }
