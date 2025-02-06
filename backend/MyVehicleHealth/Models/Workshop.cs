@@ -15,5 +15,5 @@ public class Workshop
         Phone = phone;
     }
     
-    List<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
+    public List<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
 }
