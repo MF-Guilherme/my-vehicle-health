@@ -31,7 +31,11 @@ public class MaintenanceController : ControllerBase
                 WorkshopName = m.Workshop.CompanyName,
                 MaintenanceDate = m.MaintenanceDate,
                 TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost),
-                Services = m.Services.Select(s => s.Description).ToList()
+                Services = m.Services.Select(s => new ServiceSummaryReadDto
+                {
+                    Id = s.Id,
+                    Description = s.Description,
+                }).ToList()
             })
             .ToList();
 
@@ -53,7 +57,11 @@ public class MaintenanceController : ControllerBase
                 WorkshopName = m.Workshop.CompanyName,
                 MaintenanceDate = m.MaintenanceDate,
                 TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost),
-                Services = m.Services.Select(s => s.Description).ToList()
+                Services = m.Services.Select(s => new ServiceSummaryReadDto
+                {
+                    Id = s.Id,
+                    Description = s.Description,
+                }).ToList()
             })
             .FirstOrDefault();
 
