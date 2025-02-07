@@ -18,10 +18,31 @@ public class ServiceController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public IActionResult GetAll([FromQuery] ServiceFilterDto filter)
     {
-        var services = _context.Services
+        var query = _context.Services
             .Include(s => s.Maintenance)
+            .AsQueryable(); // Permite adicionar filtros dinamicamente
+
+        // Filtro por descrição (LIKE)
+        if (!string.IsNullOrEmpty(filter.Description))
+        {
+            query = query.Where(s => s.Description.Contains(filter.Description));
+        }
+        
+        // Filtro por data de manutenção
+        if (filter.MaintenanceDate.HasValue)
+        {
+            query = query.Where(s => s.MaintenanceDate.Date == filter.MaintenanceDate.Value.Date);
+        }
+        
+        // Filtro por data da próxima manutenção
+        if (filter.NextMaintenanceDate.HasValue)
+        {
+            query = query.Where(s => s.NextMaintenanceDate.Date == filter.NextMaintenanceDate.Value.Date);
+        }
+        
+        var services = query
             .Select(s => new ServiceReadDto
             {
                 Id = s.Id,
@@ -136,4 +157,6 @@ public class ServiceController : ControllerBase
         _context.SaveChanges();
         return NoContent();
     }
+    
+    
 }
