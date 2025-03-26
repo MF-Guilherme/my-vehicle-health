@@ -44,11 +44,11 @@ public class VehicleController : ControllerBase
         var vehicle = await _mediator.Send(new UpdateVehicleCommand(id, dto));
         return Ok(vehicle);
     }
-    //
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> Delete(int id)
-    // {
-    //     await _mediator.Send(new DeleteVehicleCommand(id));
-    //     return NoContent();
-    // }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _mediator.Send(new DeleteVehicleCommand(id));
+        return NoContent();
+    }
 }
