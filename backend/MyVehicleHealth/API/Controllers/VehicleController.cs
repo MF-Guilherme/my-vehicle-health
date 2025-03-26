@@ -25,26 +25,25 @@ public class VehicleController : ControllerBase
         return Ok(result);
     }
 
-    // [HttpGet("{id}")]
-    // public async Task<IActionResult> GetById(int id)
-    // {
-    //     var result = await _mediator.Send(new GetVehicleByIdQuery(id));
-    //     return result is null ? NotFound() : Ok(result);
-    // }
-    //
-    // [HttpPost]
-    // public async Task<IActionResult> Create([FromBody] VehicleCreateDto dto)
-    // {
-    //     var result = await _mediator.Send(new CreateVehicleCommand(dto));
-    //     return CreatedAtAction(nameof(GetById), new { id = result }, null);
-    // }
-    //
-    // [HttpPut("{id}")]
-    // public async Task<IActionResult> Update(int id, [FromBody] VehicleUpdateDto dto)
-    // {
-    //     await _mediator.Send(new UpdateVehicleCommand(id, dto));
-    //     return NoContent();
-    // }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _mediator.Send(new GetVehicleByIdQuery(id));
+        return result is null ? NotFound() : Ok(result);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] VehicleCreateDto dto)
+    {
+        var vehicle = await _mediator.Send(new CreateVehicleCommand(dto));
+        return CreatedAtAction(nameof(GetById), new { id = vehicle.Id }, vehicle);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] VehicleUpdateDto dto)
+    {
+        var vehicle = await _mediator.Send(new UpdateVehicleCommand(id, dto));
+        return Ok(vehicle);
+    }
     //
     // [HttpDelete("{id}")]
     // public async Task<IActionResult> Delete(int id)
