@@ -1,16 +1,27 @@
+using System.Reflection;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MyVehicleHealth.Data;
+using MyVehicleHealth.Infrastructure.Data;
+using MyVehicleHealth.Application.Shared.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers(); // Adiciona suporte para controladores
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Database Context
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyVehicleHealth")));
+
+// MediatR Configuration
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+
+// FluentValidation
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 
@@ -22,5 +33,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.MapControllers(); // Mapeia os controladores
+app.MapControllers();
 app.Run();
