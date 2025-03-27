@@ -25,32 +25,13 @@ public class MaintenanceController : ControllerBase
         var maintenances = await _mediator.Send(new GetAllMaintenancesQuery());
         return Ok(maintenances);
     }
-//
-//     [HttpGet("{id}")]
-//     public IActionResult GetById(int id)
-//     {
-//         var maintenance = _context.Maintenances
-//             .Where(m => m.Id == id)
-//             .Include(m => m.Vehicle)
-//             .Include(m => m.Workshop)
-//             .Include(m => m.Services)
-//             .Select(m => new MaintenanceReadDto
-//             {
-//                 Id = m.Id,
-//                 VehicleName = m.Vehicle.Name,
-//                 WorkshopName = m.Workshop.CompanyName,
-//                 MaintenanceDate = m.MaintenanceDate,
-//                 TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost),
-//                 Services = m.Services.Select(s => new ServiceSummaryReadDto
-//                 {
-//                     Id = s.Id,
-//                     Description = s.Description,
-//                 }).ToList()
-//             })
-//             .FirstOrDefault();
-//
-//         return maintenance is null ? NotFound() : Ok(maintenance);
-//     }
+
+     [HttpGet("{id}")]
+     public async Task<IActionResult> GetById(int id)
+     {
+         var maintenance = await _mediator.Send(new GetMaintenanceByIdQuery(id));
+         return maintenance is null ? NotFound() : Ok(maintenance);
+     }
 //
 //     [HttpPost]
 //     public IActionResult Create(MaintenanceCreateDto dto)
