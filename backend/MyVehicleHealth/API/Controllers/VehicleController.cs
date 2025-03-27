@@ -42,7 +42,7 @@ public class VehicleController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] VehicleUpdateDto dto)
     {
         var vehicle = await _mediator.Send(new UpdateVehicleCommand(id, dto));
-        return Ok(vehicle);
+        return CreatedAtAction(nameof(GetById), new { id = vehicle.Id }, vehicle);;
     }
     
     [HttpDelete("{id}")]

@@ -44,20 +44,13 @@ public class WorkshopController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
     }
     
-    // [HttpPut("{id}")]
-    // public IActionResult Update(int id, WorkshopUpdateDto dto)
-    // {
-    //     var workshop = _context.Workshops.Find(id);
-    //     if (workshop is null) return NotFound();
-    //     
-    //     workshop.CompanyName = dto.CompanyName;
-    //     workshop.MechanicName = dto.MechanicName;
-    //     workshop.Phone = dto.Phone;
-    //     _context.SaveChanges();
-    //     
-    //     return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
-    // }
-    //
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] WorkshopUpdateDto dto)
+    {
+        var workshop = await _mediator.Send(new UpdateWorkshopCommand(id, dto));
+        return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
+    }
+    
     // [HttpDelete("{id}")]
     // public IActionResult Delete(int id)
     // {
