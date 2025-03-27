@@ -48,13 +48,10 @@ public class MaintenanceController : ControllerBase
          return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
      }
      
-//     [HttpDelete("{id}")]
-//     public IActionResult Delete(int id)
-//     {
-//         var maintenance = _context.Maintenances.Find(id);
-//         if (maintenance is null) return NotFound();
-//         _context.Maintenances.Remove(maintenance);
-//         _context.SaveChanges();
-//         return NoContent();
-//     }
+     [HttpDelete("{id}")]
+     public async Task<IActionResult> Delete(int id)
+     {
+         await _mediator.Send(new DeleteMaintenanceCommand(id));
+         return NoContent();
+     }
 }
