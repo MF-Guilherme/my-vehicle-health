@@ -29,36 +29,13 @@ public class WorkshopController : ControllerBase
         return Ok(workshops);
     }
 
-    // [HttpGet("{id}")]
-    // public IActionResult GetById(int id)
-    // {
-    //     var workshop = _context.Workshops
-    //             .Where(w => w.Id == id)
-    //             .Include(w => w.Maintenances)
-    //             .Select(w => new WorkshopReadDto
-    //             {
-    //                 Id = w.Id,
-    //                 CompanyName = w.CompanyName,
-    //                 MechanicName = w.MechanicName,
-    //                 Phone = w.Phone,
-    //                 Maintenances = w.Maintenances.Select(m => new WorkshopMaintenanceSummaryDto
-    //                 {
-    //                     Id = m.Id,
-    //                     VehicleName = m.Vehicle.Name,
-    //                     MaintenanceDate = m.MaintenanceDate,
-    //                     Services = m.Services.Select(s => new ServiceSummaryReadDto
-    //                     {
-    //                         Id = s.Id,
-    //                         Description = s.Description,
-    //                     }).ToList(),
-    //                     TotalCost = m.Services.Sum(s => s.PartCost + s.LaborCost),
-    //                 }).ToList()
-    //             })
-    //             .FirstOrDefault();
-    //     
-    //     return workshop is null ? NotFound() : Ok(workshop);
-    // }
-    //
+    [HttpGet("{id}")]
+    public async Task<IActionResult>GetById(int id)
+    {
+        var workshop = await _mediator.Send(new GetWorkshopByIdQuery(id));
+        return workshop is null ? NotFound() : Ok(workshop);
+    }
+    
     // [HttpPost]
     // public IActionResult Create(WorkshopCreateDto dto)
     // {
