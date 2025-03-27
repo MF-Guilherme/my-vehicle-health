@@ -51,14 +51,11 @@ public class WorkshopController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
     }
     
-    // [HttpDelete("{id}")]
-    // public IActionResult Delete(int id)
-    // {
-    //     var workshop = _context.Workshops.Find(id);
-    //     if (workshop is null) return NotFound();
-    //     _context.Workshops.Remove(workshop);
-    //     _context.SaveChanges();
-    //     return NoContent();
-    // }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _mediator.Send(new DeleteWorkshopCommand(id));
+        return NoContent();
+    }
     
 }
