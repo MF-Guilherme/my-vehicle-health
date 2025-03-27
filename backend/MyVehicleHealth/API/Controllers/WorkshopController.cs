@@ -7,6 +7,7 @@ using MyVehicleHealth.Infrastructure.Data;
 using MyVehicleHealth.Application.Workshop.Dtos;
 using MyVehicleHealth.Domain.Entities;
 using System.Threading.Tasks;
+using MyVehicleHealth.Application.Workshop.Commands;
 using MyVehicleHealth.Application.Workshop.Queries;
 
 namespace MyVehicleHealth.API.Controllers;
@@ -36,21 +37,13 @@ public class WorkshopController : ControllerBase
         return workshop is null ? NotFound() : Ok(workshop);
     }
     
-    // [HttpPost]
-    // public IActionResult Create(WorkshopCreateDto dto)
-    // {
-    //     var workshop = new Workshop
-    //     {
-    //         CompanyName = dto.CompanyName,
-    //         MechanicName = dto.MechanicName,
-    //         Phone = dto.Phone
-    //     };
-    //     
-    //     _context.Workshops.Add(workshop);
-    //     _context.SaveChanges();
-    //     return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
-    // }
-    //
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] WorkshopCreateDto dto)
+    {
+        var workshop = await _mediator.Send(new CreateWorkshopCommand(dto));
+        return CreatedAtAction(nameof(GetById), new { id = workshop.Id }, workshop);
+    }
+    
     // [HttpPut("{id}")]
     // public IActionResult Update(int id, WorkshopUpdateDto dto)
     // {

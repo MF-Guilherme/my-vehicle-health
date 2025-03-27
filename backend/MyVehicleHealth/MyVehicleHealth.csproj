@@ -27,7 +27,6 @@
       <Folder Include="API\" />
       <Folder Include="Application\Maintenance\Commands\" />
       <Folder Include="Application\Maintenance\Queries\" />
-      <Folder Include="Application\Workshop\Commands\" />
       <Folder Include="Domain\Enums\" />
       <Folder Include="Domain\Events\" />
       <Folder Include="Domain\Interfaces\" />
