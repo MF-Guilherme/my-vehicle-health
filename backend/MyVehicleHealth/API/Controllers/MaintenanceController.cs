@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyVehicleHealth.Application.Maintenance.Commands;
 using MyVehicleHealth.Infrastructure.Data;
 using MyVehicleHealth.Application.Maintenance.Dtos;
 using MyVehicleHealth.Application.Maintenance.Queries;
@@ -32,22 +33,14 @@ public class MaintenanceController : ControllerBase
          var maintenance = await _mediator.Send(new GetMaintenanceByIdQuery(id));
          return maintenance is null ? NotFound() : Ok(maintenance);
      }
-//
-//     [HttpPost]
-//     public IActionResult Create(MaintenanceCreateDto dto)
-//     {
-//         var maintenance = new Maintenance
-//         {
-//             VehicleId = dto.VehicleId,
-//             WorkshopId = dto.WorkshopId,
-//             MaintenanceDate = dto.MaintenanceDate,
-//         };
-//         
-//         _context.Maintenances.Add(maintenance);
-//         _context.SaveChanges();
-//         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
-//     }
-//     
+
+     [HttpPost]
+     public async Task<IActionResult> Create([FromBody] MaintenanceCreateDto dto)
+     {
+         var maintenance = await _mediator.Send(new CreateMaintenanceCommand(dto));
+         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
+     }
+     
 //     [HttpPut("{id}")]
 //     public IActionResult Update(int id, MaintenanceUpdateDto dto)
 //     {
