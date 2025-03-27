@@ -41,19 +41,13 @@ public class MaintenanceController : ControllerBase
          return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
      }
      
-//     [HttpPut("{id}")]
-//     public IActionResult Update(int id, MaintenanceUpdateDto dto)
-//     {
-//         var maintenance = _context.Maintenances.Find(id);
-//         if (maintenance is null) return NotFound();
-//         
-//         maintenance.VehicleId = dto.VehicleId;
-//         maintenance.WorkshopId = dto.WorkshopId;
-//         maintenance.MaintenanceDate = dto.MaintenanceDate;
-//         _context.SaveChanges();
-//         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
-//     }
-//     
+     [HttpPut("{id}")]
+     public async Task<IActionResult> Update(int id, [FromBody] MaintenanceUpdateDto dto)
+     {
+         var maintenance = await _mediator.Send(new UpdateMaintenanceCommand(id, dto));
+         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
+     }
+     
 //     [HttpDelete("{id}")]
 //     public IActionResult Delete(int id)
 //     {
