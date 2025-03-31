@@ -10,7 +10,7 @@ using MyVehicleHealth.Infrastructure.Data;
 namespace MyVehicleHealth.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/services")]
 public class ServiceController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -44,11 +44,11 @@ public class ServiceController : ControllerBase
     
     }
     
-    [HttpPost("maintenance/{maintenanceId}/[controller]")]
+    [HttpPost("maintenance/{maintenanceId}")]
     public async Task<IActionResult> Create([FromRoute] int maintenanceId,[FromBody] ServiceCreateDto dto)
     {
         var serviceId = await _mediator.Send(new CreateServiceCommand(maintenanceId, dto));
-        return Created($"/api/service/{serviceId}", new { Id = serviceId });
+        return Created($"/api/services/{serviceId}", new { Id = serviceId });
     }
     
     // [HttpPut("{id}")]
