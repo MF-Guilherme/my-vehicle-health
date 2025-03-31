@@ -51,25 +51,13 @@ public class ServiceController : ControllerBase
         return Created($"/api/services/{serviceId}", new { Id = serviceId });
     }
     
-    // [HttpPut("{id}")]
-    // public IActionResult Update(int id, ServiceUpdateDto dto)
-    // {
-    //     var service = _context.Services.Find(id);
-    //     if (service is null) return NotFound();
-    //     
-    //     service.Description = dto.Description;
-    //     service.MaintenanceDate = dto.MaintenanceDate;
-    //     service.CurrentMileage = dto.CurrentMileage;
-    //     service.NextMaintenanceDate = dto.NextMaintenanceDate;
-    //     service.NextMaintenanceMileage = dto.NextMaintenanceMileage;
-    //     service.PartBrand = dto.PartBrand;
-    //     service.PartCost = dto.PartCost;
-    //     service.LaborCost = dto.LaborCost;
-    //     
-    //     _context.SaveChanges();
-    //     return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
-    // }
-    //
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] ServiceUpdateDto dto)
+    {
+        var service = await _mediator.Send(new UpdateServiceCommand(id, dto));
+        return NoContent();
+    }
+    
     // [HttpDelete("{id}")]
     // public IActionResult Delete(int id)
     // {
