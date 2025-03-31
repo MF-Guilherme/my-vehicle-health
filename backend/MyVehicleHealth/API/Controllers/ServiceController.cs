@@ -54,14 +54,14 @@ public class ServiceController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] ServiceUpdateDto dto)
     {
-        var service = await _mediator.Send(new UpdateServiceCommand(id, dto));
+        await _mediator.Send(new UpdateServiceCommand(id, dto));
         return NoContent();
     }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var service = await _mediator.Send(new DeleteServiceCommand(id));
+        await _mediator.Send(new DeleteServiceCommand(id));
         return NoContent();
     }
     
