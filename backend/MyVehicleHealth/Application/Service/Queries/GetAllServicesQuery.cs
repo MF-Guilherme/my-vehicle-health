@@ -13,7 +13,7 @@ public class GetAllServicesQueryHandler : IRequestHandler<GetAllServicesQuery, L
 {
     private readonly AppDbContext _context;
 
-    private GetAllServicesQueryHandler(AppDbContext context)
+    public GetAllServicesQueryHandler(AppDbContext context)
     {
         _context = context;
     }
