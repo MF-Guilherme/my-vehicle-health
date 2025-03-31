@@ -4,9 +4,9 @@ using MyVehicleHealth.Infrastructure.Data;
 
 namespace MyVehicleHealth.Application.Workshop.Commands;
 
-public record CreateWorkshopCommand(WorkshopCreateDto Dto) : IRequest<Domain.Entities.Workshop>;
+public record CreateWorkshopCommand(WorkshopCreateDto Dto) : IRequest<int>;
 
-public class CreateWorkshopCommandHandler : IRequestHandler<CreateWorkshopCommand, Domain.Entities.Workshop>
+public class CreateWorkshopCommandHandler : IRequestHandler<CreateWorkshopCommand, int>
 {
     private readonly AppDbContext _context;
 
@@ -15,7 +15,7 @@ public class CreateWorkshopCommandHandler : IRequestHandler<CreateWorkshopComman
         _context = context;
     }
 
-    public async Task<Domain.Entities.Workshop> Handle(CreateWorkshopCommand request,
+    public async Task<int> Handle(CreateWorkshopCommand request,
         CancellationToken cancellationToken)
     {
         var workshop = new Domain.Entities.Workshop
@@ -27,6 +27,6 @@ public class CreateWorkshopCommandHandler : IRequestHandler<CreateWorkshopComman
         
         _context.Workshops.Add(workshop);
         await _context.SaveChangesAsync(cancellationToken);
-        return workshop;
+        return workshop.Id;
     }
 }

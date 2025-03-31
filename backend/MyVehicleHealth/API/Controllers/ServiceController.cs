@@ -1,11 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MyVehicleHealth.Application.Service.Commands;
 using MyVehicleHealth.Application.Service.Dtos;
 using MyVehicleHealth.Application.Service.Queries;
-using MyVehicleHealth.Domain.Entities;
-using MyVehicleHealth.Infrastructure.Data;
 
 namespace MyVehicleHealth.API.Controllers;
 
