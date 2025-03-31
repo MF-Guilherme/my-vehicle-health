@@ -37,15 +37,15 @@ public class MaintenanceController : ControllerBase
      [HttpPost]
      public async Task<IActionResult> Create([FromBody] MaintenanceCreateDto dto)
      {
-         var maintenance = await _mediator.Send(new CreateMaintenanceCommand(dto));
-         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
+         var maintenanceId = await _mediator.Send(new CreateMaintenanceCommand(dto));
+         return Created($"/api/maintenances/{maintenanceId}/", new {id = maintenanceId});
      }
      
      [HttpPut("{id}")]
      public async Task<IActionResult> Update(int id, [FromBody] MaintenanceUpdateDto dto)
      {
-         var maintenance = await _mediator.Send(new UpdateMaintenanceCommand(id, dto));
-         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
+         await _mediator.Send(new UpdateMaintenanceCommand(id, dto));
+         return NoContent();
      }
      
      [HttpDelete("{id}")]

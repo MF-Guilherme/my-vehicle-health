@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MyVehicleHealth.Application.Maintenance.Commands;
 
-public record CreateMaintenanceCommand(MaintenanceCreateDto Dto) : IRequest<Domain.Entities.Maintenance>;
+public record CreateMaintenanceCommand(MaintenanceCreateDto Dto) : IRequest<int>;
 
-public class CreateMaintenanceCommandHandler : IRequestHandler<CreateMaintenanceCommand, Domain.Entities.Maintenance>
+public class CreateMaintenanceCommandHandler : IRequestHandler<CreateMaintenanceCommand, int>
 {
     private readonly AppDbContext _context;
 
@@ -19,7 +19,7 @@ public class CreateMaintenanceCommandHandler : IRequestHandler<CreateMaintenance
         _context = context;
     }
 
-    public async Task<Domain.Entities.Maintenance> Handle(CreateMaintenanceCommand request,
+    public async Task<int> Handle(CreateMaintenanceCommand request,
         CancellationToken cancellationToken)
     {
         var maintenance = new Domain.Entities.Maintenance
@@ -31,6 +31,6 @@ public class CreateMaintenanceCommandHandler : IRequestHandler<CreateMaintenance
         
         _context.Maintenances.Add(maintenance);
         await _context.SaveChangesAsync(cancellationToken);
-        return maintenance;
+        return maintenance.Id;
     }
 }

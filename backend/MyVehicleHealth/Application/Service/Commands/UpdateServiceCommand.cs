@@ -35,7 +35,7 @@ public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand,
         service.PartCost = request.Dto.PartCost;
         service.LaborCost = request.Dto.LaborCost;
         await _context.SaveChangesAsync(cancellationToken);
-        return request.Id;
+        return service.Id;
     }
     
 }
