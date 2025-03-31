@@ -10,7 +10,7 @@ using MyVehicleHealth.Domain.Entities;
 namespace MyVehicleHealth.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/maintenances")]
 public class MaintenanceController : ControllerBase
 {
     private readonly IMediator _mediator;

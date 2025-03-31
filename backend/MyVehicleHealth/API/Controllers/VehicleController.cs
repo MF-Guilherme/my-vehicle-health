@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MyVehicleHealth.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/vehicles")]
 public class VehicleController : ControllerBase
 {
     private readonly IMediator _mediator;

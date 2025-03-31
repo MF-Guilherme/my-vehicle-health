@@ -13,7 +13,7 @@ using MyVehicleHealth.Application.Workshop.Queries;
 namespace MyVehicleHealth.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/workshops")]
 public class WorkshopController : ControllerBase
 {
     private readonly IMediator _mediator;
