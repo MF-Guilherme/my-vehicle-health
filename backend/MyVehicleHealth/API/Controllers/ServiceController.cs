@@ -58,15 +58,12 @@ public class ServiceController : ControllerBase
         return NoContent();
     }
     
-    // [HttpDelete("{id}")]
-    // public IActionResult Delete(int id)
-    // {
-    //     var service = _context.Services.Find(id);
-    //     if (service is null) return NotFound();
-    //     _context.Services.Remove(service);
-    //     _context.SaveChanges();
-    //     return NoContent();
-    // }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var service = await _mediator.Send(new DeleteServiceCommand(id));
+        return NoContent();
+    }
     
     
 }
