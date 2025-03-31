@@ -35,30 +35,14 @@ public class ServiceController : ControllerBase
     
     }
     
-    // [HttpGet("maintenance/{maintenanceId}")]
-    // public IActionResult GetAllServicesForMaintenance(int maintenanceId)
-    // {
-    //     var services = _context.Services
-    //         .Where(s => s.MaintenanceId == maintenanceId)
-    //         .Include(s => s.Maintenance)
-    //         .Select(s => new ServiceReadDto
-    //         {
-    //             Id = s.Id,
-    //             MaintenanceId = s.MaintenanceId,
-    //             Description = s.Description,
-    //             PartCost = s.PartCost,
-    //             LaborCost = s.LaborCost,
-    //             MaintenanceDate = s.MaintenanceDate,
-    //             NextMaintenanceDate = s.NextMaintenanceDate,
-    //             CurrentMileage = s.CurrentMileage,
-    //             NextMaintenanceMileage = s.NextMaintenanceMileage,
-    //             PartBrand = s.PartBrand
-    //         })
-    //         .ToList();
-    //     return Ok(services);
-    //
-    // }
-    //
+    [HttpGet("maintenance/{maintenanceId}")]
+    public async Task<IActionResult> GetAllServicesForMaintenance(int maintenanceId)
+    {
+        var services = await _mediator.Send(new GetAllServicesForMaintenanceQuery(maintenanceId));
+        return Ok(services);
+    
+    }
+    
     // [HttpPost]
     // public IActionResult Create(int maintenanceId, ServiceCreateDto dto)
     // {
