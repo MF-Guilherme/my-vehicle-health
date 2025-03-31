@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyVehicleHealth.Application.Service.Commands;
 using MyVehicleHealth.Application.Service.Dtos;
 using MyVehicleHealth.Application.Service.Queries;
 using MyVehicleHealth.Domain.Entities;
@@ -43,26 +44,13 @@ public class ServiceController : ControllerBase
     
     }
     
-    // [HttpPost]
-    // public IActionResult Create(int maintenanceId, ServiceCreateDto dto)
-    // {
-    //     var service = new Service
-    //     {
-    //         MaintenanceId = maintenanceId,
-    //         Description = dto.Description,
-    //         MaintenanceDate = dto.MaintenanceDate,
-    //         CurrentMileage = dto.CurrentMileage,
-    //         NextMaintenanceDate = dto.NextMaintenanceDate,
-    //         NextMaintenanceMileage = dto.NextMaintenanceMileage,
-    //         PartBrand = dto.PartBrand,
-    //         PartCost = dto.PartCost,
-    //         LaborCost = dto.LaborCost,
-    //     };
-    //     _context.Services.Add(service);
-    //     _context.SaveChanges();
-    //     return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
-    // }
-    //
+    [HttpPost("maintenance/{maintenanceId}/[controller]")]
+    public async Task<IActionResult> Create([FromRoute] int maintenanceId,[FromBody] ServiceCreateDto dto)
+    {
+        var serviceId = await _mediator.Send(new CreateServiceCommand(maintenanceId, dto));
+        return Created($"/api/service/{serviceId}", new { Id = serviceId });
+    }
+    
     // [HttpPut("{id}")]
     // public IActionResult Update(int id, ServiceUpdateDto dto)
     // {
