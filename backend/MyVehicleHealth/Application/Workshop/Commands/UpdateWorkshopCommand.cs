@@ -1,15 +1,13 @@
 using MediatR;
 using MyVehicleHealth.Application.Workshop.Dtos;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyVehicleHealth.Infrastructure.Data;
 
 namespace MyVehicleHealth.Application.Workshop.Commands;
 
-public record UpdateWorkshopCommand(int Id, WorkshopUpdateDto Dto) : IRequest<Domain.Entities.Workshop>;
+public record UpdateWorkshopCommand(int Id, WorkshopUpdateDto Dto) : IRequest<int>;
 
-public class UpdateWorkshopCommandHandler : IRequestHandler<UpdateWorkshopCommand, Domain.Entities.Workshop>
+public class UpdateWorkshopCommandHandler : IRequestHandler<UpdateWorkshopCommand, int>
 {
     private readonly AppDbContext _context;
 
@@ -18,7 +16,7 @@ public class UpdateWorkshopCommandHandler : IRequestHandler<UpdateWorkshopComman
         _context = context;
     }
 
-    public async Task<Domain.Entities.Workshop> Handle(UpdateWorkshopCommand request,
+    public async Task<int> Handle(UpdateWorkshopCommand request,
         CancellationToken cancellationToken)
     {
         var workshop = await _context.Workshops
@@ -33,6 +31,6 @@ public class UpdateWorkshopCommandHandler : IRequestHandler<UpdateWorkshopComman
         workshop.Phone = request.Dto.Phone;
         
         await _context.SaveChangesAsync(cancellationToken);
-        return workshop;
+        return workshop.Id;
     }
 }

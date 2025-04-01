@@ -1,16 +1,13 @@
 using FluentValidation;
 using MediatR;
 using MyVehicleHealth.Application.Vehicle.Dtos;
-using MyVehicleHealth.Domain.Entities;
 using MyVehicleHealth.Infrastructure.Data;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyVehicleHealth.Application.Vehicle.Commands;
 
-public record CreateVehicleCommand(VehicleCreateDto Dto) : IRequest<Domain.Entities.Vehicle>;
+public record CreateVehicleCommand(VehicleCreateDto Dto) : IRequest<int>;
 
-public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand, Domain.Entities.Vehicle>
+public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand, int>
 {
     private readonly AppDbContext _context;
 
@@ -19,7 +16,7 @@ public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand,
         _context = context;
     }
 
-    public async Task<Domain.Entities.Vehicle> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
     {
         var vehicle = new Domain.Entities.Vehicle
         {
@@ -29,7 +26,7 @@ public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand,
         _context.Vehicles.Add(vehicle);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return vehicle;
+        return vehicle.Id;
     }
 }
 

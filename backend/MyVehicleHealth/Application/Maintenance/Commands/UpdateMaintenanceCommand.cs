@@ -5,9 +5,9 @@ using MyVehicleHealth.Infrastructure.Data;
 
 namespace MyVehicleHealth.Application.Maintenance.Commands;
 
-public record UpdateMaintenanceCommand(int Id, MaintenanceUpdateDto Dto) : IRequest<Domain.Entities.Maintenance>;
+public record UpdateMaintenanceCommand(int Id, MaintenanceUpdateDto Dto) : IRequest<int>;
 
-public class UpdateMaintenanceCommandHandler : IRequestHandler<UpdateMaintenanceCommand, Domain.Entities.Maintenance>
+public class UpdateMaintenanceCommandHandler : IRequestHandler<UpdateMaintenanceCommand, int>
 {
     private readonly AppDbContext _context;
 
@@ -16,7 +16,7 @@ public class UpdateMaintenanceCommandHandler : IRequestHandler<UpdateMaintenance
         _context = context;
     }
 
-    public async Task<Domain.Entities.Maintenance> Handle(UpdateMaintenanceCommand request,
+    public async Task<int> Handle(UpdateMaintenanceCommand request,
         CancellationToken cancellationToken)
     {
         var maintenance = await _context.Maintenances
@@ -30,7 +30,7 @@ public class UpdateMaintenanceCommandHandler : IRequestHandler<UpdateMaintenance
         maintenance.WorkshopId = request.Dto.WorkshopId;
         maintenance.MaintenanceDate = request.Dto.MaintenanceDate;
         await _context.SaveChangesAsync(cancellationToken);
-        return maintenance;
+        return maintenance.Id;
     }
     
 }

@@ -1,160 +1,64 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using MyVehicleHealth.Application.Service.Commands;
 using MyVehicleHealth.Application.Service.Dtos;
-using MyVehicleHealth.Domain.Entities;
-using MyVehicleHealth.Infrastructure.Data;
+using MyVehicleHealth.Application.Service.Queries;
 
 namespace MyVehicleHealth.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/services")]
 public class ServiceController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IMediator _mediator;
 
-    public ServiceController(AppDbContext context)
+    public ServiceController(IMediator mediator)
     {
-        _context = context;
+        _mediator = mediator;
     }
 
     [HttpGet]
-    public IActionResult GetAll([FromQuery] ServiceFilterDto filter)
+    public async Task<IActionResult> GetAll([FromQuery] ServiceFilterDto filter)
     {
-        var query = _context.Services
-            .Include(s => s.Maintenance)
-            .AsQueryable(); // Permite adicionar filtros dinamicamente
-
-        // Filtro por descrição (LIKE)
-        if (!string.IsNullOrEmpty(filter.Description))
-        {
-            query = query.Where(s => s.Description.Contains(filter.Description));
-        }
-        
-        // Filtro por data de manutenção
-        if (filter.MaintenanceDate.HasValue)
-        {
-            query = query.Where(s => s.MaintenanceDate.Date == filter.MaintenanceDate.Value.Date);
-        }
-        
-        // Filtro por data da próxima manutenção
-        if (filter.NextMaintenanceDate.HasValue)
-        {
-            query = query.Where(s => s.NextMaintenanceDate.Date == filter.NextMaintenanceDate.Value.Date);
-        }
-        
-        var services = query
-            .Select(s => new ServiceReadDto
-            {
-                Id = s.Id,
-                MaintenanceId = s.MaintenanceId,
-                Description = s.Description,
-                PartCost = s.PartCost,
-                LaborCost = s.LaborCost,
-                MaintenanceDate = s.MaintenanceDate,
-                NextMaintenanceDate = s.NextMaintenanceDate,
-                CurrentMileage = s.CurrentMileage,
-                NextMaintenanceMileage = s.NextMaintenanceMileage,
-                PartBrand = s.PartBrand
-            })
-            .ToList();
+        var services = await _mediator.Send(new GetAllServicesQuery(filter));
         return Ok(services);
 
     }
     
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<IActionResult>GetById(int id)
     {
-        var service = _context.Services
-            .Where(s => s.Id == id)
-            .Include(s => s.Maintenance)
-            .Select(s => new ServiceReadDto
-            {
-                Id = s.Id,
-                MaintenanceId = s.MaintenanceId,
-                Description = s.Description,
-                PartCost = s.PartCost,
-                LaborCost = s.LaborCost,
-                MaintenanceDate = s.MaintenanceDate,
-                NextMaintenanceDate = s.NextMaintenanceDate,
-                CurrentMileage = s.CurrentMileage,
-                NextMaintenanceMileage = s.NextMaintenanceMileage,
-                PartBrand = s.PartBrand
-            })
-            .FirstOrDefault();
-        return Ok(service);
-
+        var service = await _mediator.Send(new GetServiceByIdQuery(id));
+        return service is null ? NotFound() : Ok(service);
+    
     }
     
     [HttpGet("maintenance/{maintenanceId}")]
-    public IActionResult GetAllServicesForMaintenance(int maintenanceId)
+    public async Task<IActionResult> GetAllServicesForMaintenance(int maintenanceId)
     {
-        var services = _context.Services
-            .Where(s => s.MaintenanceId == maintenanceId)
-            .Include(s => s.Maintenance)
-            .Select(s => new ServiceReadDto
-            {
-                Id = s.Id,
-                MaintenanceId = s.MaintenanceId,
-                Description = s.Description,
-                PartCost = s.PartCost,
-                LaborCost = s.LaborCost,
-                MaintenanceDate = s.MaintenanceDate,
-                NextMaintenanceDate = s.NextMaintenanceDate,
-                CurrentMileage = s.CurrentMileage,
-                NextMaintenanceMileage = s.NextMaintenanceMileage,
-                PartBrand = s.PartBrand
-            })
-            .ToList();
+        var services = await _mediator.Send(new GetAllServicesForMaintenanceQuery(maintenanceId));
         return Ok(services);
-
+    
     }
     
-    [HttpPost]
-    public IActionResult Create(int maintenanceId, ServiceCreateDto dto)
+    [HttpPost("maintenance/{maintenanceId}")]
+    public async Task<IActionResult> Create([FromRoute] int maintenanceId,[FromBody] ServiceCreateDto dto)
     {
-        var service = new Service
-        {
-            MaintenanceId = maintenanceId,
-            Description = dto.Description,
-            MaintenanceDate = dto.MaintenanceDate,
-            CurrentMileage = dto.CurrentMileage,
-            NextMaintenanceDate = dto.NextMaintenanceDate,
-            NextMaintenanceMileage = dto.NextMaintenanceMileage,
-            PartBrand = dto.PartBrand,
-            PartCost = dto.PartCost,
-            LaborCost = dto.LaborCost,
-        };
-        _context.Services.Add(service);
-        _context.SaveChanges();
-        return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
+        var serviceId = await _mediator.Send(new CreateServiceCommand(maintenanceId, dto));
+        return Created($"/api/services/{serviceId}", new { Id = serviceId });
     }
-
+    
     [HttpPut("{id}")]
-    public IActionResult Update(int id, ServiceUpdateDto dto)
+    public async Task<IActionResult> Update(int id, [FromBody] ServiceUpdateDto dto)
     {
-        var service = _context.Services.Find(id);
-        if (service is null) return NotFound();
-        
-        service.Description = dto.Description;
-        service.MaintenanceDate = dto.MaintenanceDate;
-        service.CurrentMileage = dto.CurrentMileage;
-        service.NextMaintenanceDate = dto.NextMaintenanceDate;
-        service.NextMaintenanceMileage = dto.NextMaintenanceMileage;
-        service.PartBrand = dto.PartBrand;
-        service.PartCost = dto.PartCost;
-        service.LaborCost = dto.LaborCost;
-        
-        _context.SaveChanges();
-        return CreatedAtAction(nameof(GetById), new { id = service.Id }, service);
+        await _mediator.Send(new UpdateServiceCommand(id, dto));
+        return NoContent();
     }
-
+    
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var service = _context.Services.Find(id);
-        if (service is null) return NotFound();
-        _context.Services.Remove(service);
-        _context.SaveChanges();
+        await _mediator.Send(new DeleteServiceCommand(id));
         return NoContent();
     }
     

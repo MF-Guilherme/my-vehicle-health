@@ -25,11 +25,6 @@
 
     <ItemGroup>
       <Folder Include="API\" />
-      <Folder Include="Application\Service\Commands\" />
-      <Folder Include="Application\Service\Queries\" />
-      <Folder Include="Domain\Enums\" />
-      <Folder Include="Domain\Events\" />
-      <Folder Include="Domain\Interfaces\" />
       <Folder Include="Infrastructure\" />
       <Folder Include="Tests\" />
     </ItemGroup>

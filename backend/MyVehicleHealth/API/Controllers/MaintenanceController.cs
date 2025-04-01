@@ -1,16 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MyVehicleHealth.Application.Maintenance.Commands;
-using MyVehicleHealth.Infrastructure.Data;
 using MyVehicleHealth.Application.Maintenance.Dtos;
 using MyVehicleHealth.Application.Maintenance.Queries;
-using MyVehicleHealth.Domain.Entities;
 
 namespace MyVehicleHealth.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/maintenances")]
 public class MaintenanceController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -37,15 +34,15 @@ public class MaintenanceController : ControllerBase
      [HttpPost]
      public async Task<IActionResult> Create([FromBody] MaintenanceCreateDto dto)
      {
-         var maintenance = await _mediator.Send(new CreateMaintenanceCommand(dto));
-         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
+         var maintenanceId = await _mediator.Send(new CreateMaintenanceCommand(dto));
+         return Created($"/api/maintenances/{maintenanceId}/", new {id = maintenanceId});
      }
      
      [HttpPut("{id}")]
      public async Task<IActionResult> Update(int id, [FromBody] MaintenanceUpdateDto dto)
      {
-         var maintenance = await _mediator.Send(new UpdateMaintenanceCommand(id, dto));
-         return CreatedAtAction(nameof(GetById), new { id = maintenance.Id }, maintenance);
+         await _mediator.Send(new UpdateMaintenanceCommand(id, dto));
+         return NoContent();
      }
      
      [HttpDelete("{id}")]

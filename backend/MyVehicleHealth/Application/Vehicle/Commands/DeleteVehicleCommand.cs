@@ -1,9 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MyVehicleHealth.Domain.Entities;
 using MyVehicleHealth.Infrastructure.Data;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyVehicleHealth.Application.Vehicle.Commands;
 
