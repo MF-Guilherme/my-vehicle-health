@@ -25,6 +25,18 @@ public class AppDbContext : DbContext
             .HasForeignKey(v => v.UserId)
             .OnDelete(DeleteBehavior.Cascade);
         
+        modelBuilder.Entity<Maintenance>()
+            .HasOne(m => m.Vehicle)
+            .WithMany(v => v.Maintenances)
+            .HasForeignKey(m => m.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Maintenance>()
+            .HasOne(m => m.User)
+            .WithMany(u => u.Maintenances)
+            .HasForeignKey(m => m.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Service>()
             .Property(s => s.LaborCost)
             .HasPrecision(18, 2);
