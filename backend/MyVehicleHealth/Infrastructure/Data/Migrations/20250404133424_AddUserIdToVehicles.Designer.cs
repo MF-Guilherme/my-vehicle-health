@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyVehicleHealth.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using MyVehicleHealth.Infrastructure.Data;
 namespace MyVehicleHealth.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250404133424_AddUserIdToVehicles")]
+    partial class AddUserIdToVehicles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace MyVehicleHealth.Migrations
                     b.Property<DateTime>("MaintenanceDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("VehicleId")
@@ -181,11 +184,9 @@ namespace MyVehicleHealth.Migrations
 
             modelBuilder.Entity("MyVehicleHealth.Domain.Entities.Maintenance", b =>
                 {
-                    b.HasOne("MyVehicleHealth.Domain.Entities.User", "User")
+                    b.HasOne("MyVehicleHealth.Domain.Entities.User", null)
                         .WithMany("Maintenances")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.HasOne("MyVehicleHealth.Domain.Entities.Vehicle", "Vehicle")
                         .WithMany("Maintenances")
@@ -198,8 +199,6 @@ namespace MyVehicleHealth.Migrations
                         .HasForeignKey("WorkshopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
 
                     b.Navigation("Vehicle");
 
