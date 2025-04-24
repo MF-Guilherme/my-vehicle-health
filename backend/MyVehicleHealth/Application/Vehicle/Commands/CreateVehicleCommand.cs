@@ -23,14 +23,16 @@ public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand,
     public async Task<int> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
     {
         var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        if (userIdClaim is null)
         {
             throw new Exception("User ID is invalid");
         }
+        var userId = userIdClaim.Value; // Alterado para string
+
         var vehicle = new Domain.Entities.Vehicle
         {
             Name = request.Dto.Name,
-            UserId = userId
+            UserId = userId // Alterado para string
         };
 
         _context.Vehicles.Add(vehicle);

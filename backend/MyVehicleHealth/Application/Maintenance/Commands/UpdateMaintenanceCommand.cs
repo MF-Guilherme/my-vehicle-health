@@ -22,13 +22,14 @@ public class UpdateMaintenanceCommandHandler : IRequestHandler<UpdateMaintenance
     public async Task<int> Handle(UpdateMaintenanceCommand request, CancellationToken cancellationToken)
     {
         var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        if (userIdClaim is null)
         {
             throw new Exception("User ID is invalid");
         }
+        var userId = userIdClaim.Value; // Alterado para string
 
         var maintenance = await _context.Maintenances
-            .FirstOrDefaultAsync(m => m.Id == request.Id && m.UserId == userId, cancellationToken);
+            .FirstOrDefaultAsync(m => m.Id == request.Id && m.UserId == userId, cancellationToken); // Comparação ajustada
 
         if (maintenance is null)
         {

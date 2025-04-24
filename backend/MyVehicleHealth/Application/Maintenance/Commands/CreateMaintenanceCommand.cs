@@ -22,16 +22,18 @@ public class CreateMaintenanceCommandHandler : IRequestHandler<CreateMaintenance
         CancellationToken cancellationToken)
     {
         var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        if (userIdClaim is null)
         {
             throw new Exception("User ID is invalid");
         }
+        var userId = userIdClaim.Value; // Alterado para string
+
         var maintenance = new Domain.Entities.Maintenance
         {
             VehicleId = request.Dto.VehicleId,
             WorkshopId = request.Dto.WorkshopId,
             MaintenanceDate = request.Dto.MaintenanceDate,
-            UserId = userId,
+            UserId = userId, // Alterado para string
         };
         
         _context.Maintenances.Add(maintenance);
