@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyVehicleHealth.Infrastructure.Data;
 using MyVehicleHealth.Application.Shared.Behaviors;
+using MyVehicleHealth.Application.Shared.Commands;
 using MyVehicleHealth.Application.Shared.Services;
 using MyVehicleHealth.Domain.Entities;
 
@@ -94,6 +95,7 @@ builder.Services.AddHttpContextAccessor();
 // Configuração do MediatR
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddMediatR(typeof(Program).Assembly);
+builder.Services.AddMediatR(typeof(LoginCommandHandler).Assembly);
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
