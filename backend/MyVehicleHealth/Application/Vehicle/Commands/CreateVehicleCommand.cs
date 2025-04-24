@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using MyVehicleHealth.Application.Vehicle.Dtos;
@@ -10,17 +12,27 @@ public record CreateVehicleCommand(VehicleCreateDto Dto) : IRequest<int>;
 public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand, int>
 {
     private readonly AppDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CreateVehicleCommandHandler(AppDbContext context)
+    public CreateVehicleCommandHandler(AppDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<int> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
     {
+        var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim is null)
+        {
+            throw new Exception("User ID is invalid");
+        }
+        var userId = userIdClaim.Value; // Alterado para string
+
         var vehicle = new Domain.Entities.Vehicle
         {
-            Name = request.Dto.Name
+            Name = request.Dto.Name,
+            UserId = userId // Alterado para string
         };
 
         _context.Vehicles.Add(vehicle);
