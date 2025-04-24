@@ -22,13 +22,14 @@ public class UpdateVehicleCommandHandler : IRequestHandler<UpdateVehicleCommand,
     public async Task<int> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
     {
         var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim is null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        if (userIdClaim is null)
         {
             throw new Exception("User ID is invalid");
         }
+        var userId = userIdClaim.Value; // Alterado para string
 
         var vehicle = await _context.Vehicles
-            .FirstOrDefaultAsync(v => v.Id == request.Id && v.UserId == userId, cancellationToken);
+            .FirstOrDefaultAsync(v => v.Id == request.Id && v.UserId == userId, cancellationToken); // Comparação ajustada
 
         if (vehicle is null)
         {

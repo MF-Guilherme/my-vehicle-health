@@ -3,7 +3,7 @@ namespace MyVehicleHealth.Domain.Entities;
 public class Maintenance
 {
     public int Id { get; set; }
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
     public int VehicleId { get; set; }
     public int WorkshopId { get; set; }
     public DateTime MaintenanceDate { get; set; }

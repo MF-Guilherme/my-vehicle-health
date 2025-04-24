@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyVehicleHealth.Domain.Entities;
 
 namespace MyVehicleHealth.Infrastructure.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Suas configurações de relacionamento aqui
-        
+        base.OnModelCreating(modelBuilder); // Necessário para configurar o Identity
+
         // Configuração do usuário
         modelBuilder.Entity<User>(entity =>
         {
@@ -24,19 +25,19 @@ public class AppDbContext : DbContext
             .WithMany(u => u.Vehicles)
             .HasForeignKey(v => v.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         modelBuilder.Entity<Maintenance>()
             .HasOne(m => m.Vehicle)
             .WithMany(v => v.Maintenances)
             .HasForeignKey(m => m.VehicleId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Maintenance>()
             .HasOne(m => m.User)
             .WithMany(u => u.Maintenances)
             .HasForeignKey(m => m.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Service>()
             .Property(s => s.LaborCost)
             .HasPrecision(18, 2);
@@ -50,5 +51,4 @@ public class AppDbContext : DbContext
     public DbSet<Workshop> Workshops { get; set; }
     public DbSet<Maintenance> Maintenances { get; set; }
     public DbSet<Service> Services { get; set; }
-    public DbSet<User> Users { get; set; }
 }
